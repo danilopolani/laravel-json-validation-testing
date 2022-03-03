@@ -26,6 +26,9 @@ it('returns the error message for built-in rules', function () {
     expect(JsonValidation::getRuleErrorMessage('foo', 'required_without:bar'))->toBe([
         'The foo field is required when bar is not present.',
     ]);
+    expect(JsonValidation::getRuleErrorMessage('foo.1.bar', 'required'))->toBe([
+        'The foo.1.bar field is required.',
+    ]);
 });
 
 it('extracts the error message from a custom rule', function () {

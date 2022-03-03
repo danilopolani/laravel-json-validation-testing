@@ -40,6 +40,7 @@ class Validator extends \Illuminate\Validation\Validator
                     $message,
                     $attribute,
                     get_class($rule),
+                    []
                 );
             }
 
@@ -65,7 +66,7 @@ class Validator extends \Illuminate\Validation\Validator
      * @param  array $parameters
      * @return string
      */
-    protected function buildMessage(string $message, string $attribute, string $rule, array $parameters = []): string
+    protected function buildMessage(string $message, string $attribute, string $rule, array $parameters): string
     {
         $result = $this->makeReplacements(...func_get_args());
 

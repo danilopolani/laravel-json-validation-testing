@@ -36,30 +36,44 @@ class Validator extends \Illuminate\Validation\Validator
             $messages = $messages ? (array) $messages : [get_class($rule)];
 
             foreach ($messages as $message) {
-                $result[] = $this->makeReplacements(
+                $result[] = $this->buildMessage(
                     $message,
                     $attribute,
                     get_class($rule),
-                    []
                 );
             }
 
             return $result;
         }
 
-        $attribute = str_replace(
-            [$this->dotPlaceholder, '__asterisk__'],
-            ['.', '*'],
-            $attribute
-        );
-
         return [
-            $this->makeReplacements(
+            $this->buildMessage(
                 $this->getMessage($attribute, $rule),
                 $attribute,
                 $rule,
                 $parameters
             ),
         ];
+    }
+
+    /**
+     * Build the validation message.
+     *
+     * @param  string $message
+     * @param  string $attribute
+     * @param  string $rule
+     * @param  array $parameters
+     * @return string
+     */
+    protected function buildMessage(string $message, string $attribute, string $rule, array $parameters = []): string
+    {
+        $result = $this->makeReplacements(...func_get_args());
+
+        // Preserve original attribute name if nested (e.g. array.1.field)
+        if (str_contains($attribute, '.')) {
+            $result = str_replace($this->getDisplayableAttribute($attribute), $attribute, $result);
+        }
+
+        return $result;
     }
 }

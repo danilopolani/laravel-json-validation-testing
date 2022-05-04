@@ -3,10 +3,23 @@
 namespace DaniloPolani\JsonValidation;
 
 use Illuminate\Contracts\Validation\Rule as RuleContract;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationRuleParser;
 
 class Validator extends \Illuminate\Validation\Validator
 {
+    protected array $dynamicRules = [
+        'between',
+        'gt',
+        'gte',
+        'lt',
+        'lte',
+        'max',
+        'min',
+        'password',
+        'size',
+    ];
+
     /**
      * Get the error messages for an attribute and a validation rule.
      *
@@ -68,6 +81,16 @@ class Validator extends \Illuminate\Validation\Validator
      */
     protected function buildMessage(string $message, string $attribute, string $rule, array $parameters): string
     {
+        // Convert dynamic rules such as "size.array" into their original shape ("size")
+        if (str_contains($rule, '.')) {
+            $originalRule = Str::of($rule)->before('.')->snake()->toString();
+
+            // $originalRule !== $rule is needed because when no "." is present on the rule, it returns the whole string
+            if ($originalRule !== $rule && in_array($originalRule, $this->dynamicRules)) {
+                $rule = $originalRule;
+            }
+        }
+
         $result = $this->makeReplacements(...func_get_args());
 
         // Preserve original attribute name if nested (e.g. array.1.field)

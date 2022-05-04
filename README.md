@@ -47,6 +47,16 @@ it('throws validation error', function () {
 });
 ```
 
+It supports as well dynamic rules, such as `between`, `size`, `max` etc. You just need to specify the type of rule you want to apply:
+
+```php
+it('throws validation error', function () {
+    $this->postJson('/')
+        ->assertJsonValidationErrorRule('foo', 'between.string:1,5') // The foo must be between 1 and 5 characters.
+        ->assertJsonValidationErrorRule('foo', 'size.array:3'); // The foo must contain 3 items.
+});
+```
+
 You can even test multiple validation errors at once by providing an array of `field => rule` as argument:
 
 ```php

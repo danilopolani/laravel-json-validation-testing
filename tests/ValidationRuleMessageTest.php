@@ -38,8 +38,7 @@ it('returns the error message for built-in rules', function () use ($rulesToLoad
 });
 
 it('extracts the error message from a custom rule', function () {
-    $rule = new class() implements ValidationRule, HasRuleMessage
-    {
+    $rule = new class () implements ValidationRule, HasRuleMessage {
         public function validate(string $attribute, mixed $value, \Closure $fail): void
         {
             return;

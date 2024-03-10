@@ -2,7 +2,7 @@
 
 namespace DaniloPolani\JsonValidation;
 
-use Illuminate\Contracts\Validation\Rule as RuleContract;
+use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
 use Illuminate\Support\Facades\App;
 use Illuminate\Testing\Assert as PHPUnit;
 use Illuminate\Testing\TestResponse;
@@ -28,7 +28,7 @@ class JsonValidationServiceProvider extends PackageServiceProvider
              * @param  string  $responseKey
              * @return self
              */
-            function (string|array $attribute, string|RuleContract|null $rule = null, string $responseKey = 'errors') {
+            function (string|array $attribute, string|HasRuleMessage|null $rule = null, string $responseKey = 'errors') {
                 $validationRules = $attribute;
 
                 if (is_string($attribute)) {

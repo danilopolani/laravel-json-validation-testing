@@ -1,7 +1,8 @@
 <?php
 
+use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
 use DaniloPolani\JsonValidation\JsonValidation;
-use Illuminate\Contracts\Validation\Rule as RuleContract;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Translation\ArrayLoader;
@@ -34,10 +35,11 @@ it('returns the error message for built-in rules', function () use ($rulesToLoad
 });
 
 it('extracts the error message from a custom rule', function () {
-    $rule = new class () implements RuleContract {
-        public function passes($attribute, $value): bool
+    $rule = new class() implements ValidationRule, HasRuleMessage
+    {
+        public function validate(string $attribute, mixed $value, \Closure $fail): void
         {
-            return true;
+            return;
         }
 
         public function message(): string

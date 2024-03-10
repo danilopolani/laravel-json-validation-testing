@@ -102,7 +102,7 @@ Of course you can provide your own custom validation Rules:
 ```php
 it('throws validation error', function () {
     $this->postJson('/')
-        ->assertJsonValidationErrorRule('foo', new MyCustomRule());
+        ->assertJsonValidationErrorRule('foo', new Uppercase());
 });
 ```
 

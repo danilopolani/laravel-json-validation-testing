@@ -38,15 +38,6 @@ it('throws validation error', function () {
 });
 ```
 
-Of course you can provide your own custom validation Rules:
-
-```php
-it('throws validation error', function () {
-    $this->postJson('/')
-        ->assertJsonValidationErrorRule('foo', new MyCustomRule());
-});
-```
-
 It supports as well dynamic rules, such as `between`, `size`, `max` etc. You just need to specify the type of rule you want to apply:
 
 ```php
@@ -68,6 +59,50 @@ it('throws validation error', function () {
             'foo' => 'required',
             'bar' => 'required_array_keys:foo,baz',
         ]);
+});
+```
+
+### Custom rules
+If you want to test a custom rule, make sure it implements the interface `DaniloPolani\JsonValidation\Contracts\HasRuleMessage`, needed to extract the failing message to check against.
+
+For example, a custom Rule would look like this:
+```php
+<?php
+ 
+namespace App\Rules;
+ 
+use Closure;
+use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
+use Illuminate\Contracts\Validation\ValidationRule;
+ 
+class Uppercase implements ValidationRule, HasRuleMessage
+{
+    /**
+     * Run the validation rule.
+     */
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (strtoupper($value) !== $value) {
+            $fail($this->message());
+        }
+    }
+
+    public function message(): string
+    {
+        return 'The :attribute must be uppercase.';
+    }
+}
+```
+
+And then you can use it in your assert function:
+
+
+Of course you can provide your own custom validation Rules:
+
+```php
+it('throws validation error', function () {
+    $this->postJson('/')
+        ->assertJsonValidationErrorRule('foo', new MyCustomRule());
 });
 ```
 

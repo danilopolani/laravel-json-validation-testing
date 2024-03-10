@@ -3,6 +3,7 @@
 namespace DaniloPolani\JsonValidation;
 
 use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
+use Illuminate\Validation\Rules\Enum as EnumRule;
 use Illuminate\Support\Facades\App;
 use Illuminate\Testing\Assert as PHPUnit;
 use Illuminate\Testing\TestResponse;
@@ -22,13 +23,9 @@ class JsonValidationServiceProvider extends PackageServiceProvider
             'assertJsonValidationErrorRule',
             /**
              * Assert that the response has the given JSON validation errors.
-             *
-             * @param  string|array  $attribute
-             * @param  string|\Illuminate\Contracts\Validation\Rule|null  $rule
-             * @param  string  $responseKey
              * @return self
              */
-            function (string|array $attribute, string|HasRuleMessage|null $rule = null, string $responseKey = 'errors') {
+            function (string|array $attribute, string|HasRuleMessage|EnumRule|null $rule = null, string $responseKey = 'errors') {
                 $validationRules = $attribute;
 
                 if (is_string($attribute)) {

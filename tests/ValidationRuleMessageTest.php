@@ -2,13 +2,16 @@
 
 use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
 use DaniloPolani\JsonValidation\JsonValidation;
+use DaniloPolani\JsonValidation\Tests\TestEnumRole;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Translation\ArrayLoader;
 use Illuminate\Translation\Translator;
+use Illuminate\Validation\Rules\Enum;
 
-$rules = require './tests/validation.php';
+$rules = require './vendor/laravel/framework/src/Illuminate/Translation/lang/en/validation.php';
+
 $rulesToLoad = Collection::make($rules)->mapWithKeys(fn (mixed $value, string $key) => [
     'validation.' . $key => $value,
 ])->toArray();
@@ -35,7 +38,8 @@ it('returns the error message for built-in rules', function () use ($rulesToLoad
 });
 
 it('extracts the error message from a custom rule', function () {
-    $rule = new class () implements ValidationRule, HasRuleMessage {
+    $rule = new class() implements ValidationRule, HasRuleMessage
+    {
         public function validate(string $attribute, mixed $value, \Closure $fail): void
         {
             return;
@@ -244,3 +248,19 @@ it('handles dynamic "size" rule', function (string $shape) use ($rules, $rulesTo
     'numeric',
     'string',
 ]);
+
+it('handles "Enum" rule', function () use ($rules, $rulesToLoad) {
+    $trans = new Translator(new ArrayLoader(), 'en');
+    $trans->addLines($rulesToLoad, 'en');
+
+    /** @var \DaniloPolani\JsonValidation\Tests\TestCase $this */
+    App::getFacadeApplication()->instance('translator', $trans);
+
+    $expected = str_replace(
+        ':attribute',
+        'role',
+        $rules['enum'],
+    );
+
+    expect(JsonValidation::getRuleErrorMessage('role', new Enum(TestEnumRole::class)))->toBe([$expected]);
+});

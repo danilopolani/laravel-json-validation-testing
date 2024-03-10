@@ -3,6 +3,7 @@
 namespace DaniloPolani\JsonValidation;
 
 use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
+use Illuminate\Validation\Rules\Enum as EnumRule;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationRuleParser;
 
@@ -23,7 +24,7 @@ class Validator extends \Illuminate\Validation\Validator
     /**
      * Get the error messages for an attribute and a validation rule.
      */
-    public function getErrorMessage(string $attribute, string|HasRuleMessage $rule): array
+    public function getErrorMessage(string $attribute, string|HasRuleMessage|EnumRule $rule): array
     {
         if ($rule instanceof HasRuleMessage) {
             $messages = $rule->message();
@@ -40,6 +41,12 @@ class Validator extends \Illuminate\Validation\Validator
             }
 
             return $result;
+        }
+
+        if ($rule instanceof EnumRule) {
+            return [
+                str_replace(':attribute', $attribute, $this->getMessage($attribute, 'enum')),
+            ];
         }
 
         [$rule, $parameters] = ValidationRuleParser::parse($rule);

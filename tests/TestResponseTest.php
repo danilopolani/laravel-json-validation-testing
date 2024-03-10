@@ -33,8 +33,7 @@ it('accepts an array of field => rule', function () {
 });
 
 it('accepts a custom rule', function () {
-    $rule = new class() implements ValidationRule, HasRuleMessage
-    {
+    $rule = new class () implements ValidationRule, HasRuleMessage {
         public function validate(string $attribute, mixed $value, \Closure $fail): void
         {
             return;

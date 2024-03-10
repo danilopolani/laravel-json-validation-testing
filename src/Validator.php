@@ -3,8 +3,8 @@
 namespace DaniloPolani\JsonValidation;
 
 use DaniloPolani\JsonValidation\Contracts\HasRuleMessage;
-use Illuminate\Validation\Rules\Enum as EnumRule;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum as EnumRule;
 use Illuminate\Validation\ValidationRuleParser;
 
 class Validator extends \Illuminate\Validation\Validator
